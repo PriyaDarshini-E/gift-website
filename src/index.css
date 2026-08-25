@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', sans-serif;
+  --font-display: 'Poppins', sans-serif;
+  
+  /* Olive palette */
+  --color-olive-50: #f4f6f0;
+  --color-olive-100: #e9edd7;
+  --color-olive-500: #556B2F; /* Elegant Olive Green */
+  --color-olive-600: #445625;
+  --color-olive-700: #34421d;
+  --color-olive-800: #252f15;
+  
+  /* Gold palette */
+  --color-gold-50: #fdfbf4;
+  --color-gold-100: #faf3d5;
+  --color-gold-500: #D4AF37; /* Stylish Gold */
+  --color-gold-600: #b8952b;
+  --color-gold-700: #937622;
+  
+  /* Coral / Red accents */
+  --color-coral-500: #ff5454;
+  --color-coral-600: #e04343;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #fafaf9;
+  color: #1c1917;
+  overflow-x: hidden;
+}
+
+/* Custom iridescent border animation utility */
+@keyframes iridescent-bg {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-iridescent {
+  background: linear-gradient(135deg, #ffd700, #ff8c00, #ff5454, #d4af37, #556b2f, #ffd700);
+  background-size: 300% 300%;
+  animation: iridescent-bg 6s ease infinite;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
