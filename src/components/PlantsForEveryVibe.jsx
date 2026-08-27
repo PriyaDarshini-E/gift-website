@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useCart } from '../context/CartContext';
 
 /* ── Plants Categories Data ──────────────────────────────── */
 const plantCategories = [
@@ -8,15 +9,16 @@ const plantCategories = [
   { id: 3, name: 'Lucky Bamboo', img: '/images/home/luckyplants.png', gradient: 'from-[#f0fdf4] via-[#bbf7d0] to-[#4ade80]', emoji: '🎍' },
   { id: 4, name: 'Peace Lily', img: '/images/home/peacelilyplants.png', gradient: 'from-[#f0fdfa] via-[#ccfbf1] to-[#5eead4]', emoji: '🌱' },
   { id: 5, name: 'All Plants', img: '/images/home/allplants.png', gradient: 'from-[#fef3c7] via-[#fde68a] to-[#f59e0b]', emoji: '🍃' },
-  { id: 6, name: 'Succulents', img: null, gradient: 'from-[#d1fae5] via-[#6ee7b7] to-[#10b981]', emoji: '🌵' },
-  { id: 7, name: 'Air Purifying Plants', img: null, gradient: 'from-[#e0e7ff] via-[#c7d2fe] to-[#818cf8]', emoji: '🌴' },
-  { id: 8, name: 'Bonsai Plants', img: null, gradient: 'from-[#fef3c7] via-[#fcd34d] to-[#d97706]', emoji: '🌾' },
+  { id: 6, name: 'Succulents', img: '/images/home/occasion_housewarming.png', gradient: 'from-[#d1fae5] via-[#6ee7b7] to-[#10b981]', emoji: '🌵' },
+  { id: 7, name: 'Air Purifying Plants', img: '/images/home/indoorplants.png', gradient: 'from-[#e0e7ff] via-[#c7d2fe] to-[#818cf8]', emoji: '🌴' },
+  { id: 8, name: 'Bonsai Plants', img: '/images/home/flower_coll_5.png', gradient: 'from-[#fef3c7] via-[#fcd34d] to-[#d97706]', emoji: '🌾' },
 ];
 
 const CARD_GAP = 20; // px between cards
 const VISIBLE = 5;  // cards visible on desktop
 
 export default function PlantsForEveryVibe() {
+  const { openProductModal } = useCart();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [cardWidth, setCardWidth] = useState(0);
   const containerRef = useRef(null);
@@ -79,6 +81,7 @@ export default function PlantsForEveryVibe() {
               {plantCategories.map((item) => (
                 <div
                   key={item.id}
+                  onClick={() => openProductModal({ id: item.id, name: item.name, price: 899, img: item.img || '/images/home/indoorplants.png' })}
                   className="flex-shrink-0 flex flex-col items-center gap-3 cursor-pointer group"
                   style={{ width: cardWidth || `${100 / VISIBLE}%` }}
                 >

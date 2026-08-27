@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useCart } from '../context/CartContext';
 
 /* ── Feelings Categories Data ───────────────────────────── */
 const feelings = [
@@ -51,7 +52,7 @@ const feelings = [
   {
     id: 6,
     title: 'Congratulations',
-    img: null,
+    img: '/images/home/flower_coll_4.png',
     bgColor: 'bg-[#fff3cd]',
     textColor: 'text-[#856404]',
     gradient: 'from-[#fff3cd] to-[#ffe8a1]',
@@ -60,16 +61,16 @@ const feelings = [
   {
     id: 7,
     title: 'Get Well Soon',
-    img: null,
-    bgColor: 'bg-[#e0f2fe]',
-    textColor: 'text-[#0369a1]',
-    gradient: 'from-[#e0f2fe] to-[#bae6fd]',
-    emoji: '☀️'
+    img: '/images/home/flower_coll_2.png',
+    bgColor: 'bg-[#e2f0d9]',
+    textColor: 'text-[#385723]',
+    gradient: 'from-[#e2f0d9] to-[#c5e0b4]',
+    emoji: '🌻'
   },
   {
     id: 8,
     title: 'Thank You',
-    img: null,
+    img: '/images/home/flower_coll_3.png',
     bgColor: 'bg-[#fae1dd]',
     textColor: 'text-[#9c413b]',
     gradient: 'from-[#fae1dd] to-[#f8edeb]',
@@ -148,6 +149,7 @@ export default function GiftsForEveryFeeling() {
               {feelings.map((item) => (
                 <div
                   key={item.id}
+                  onClick={() => openProductModal({ id: item.id, name: `${item.title} Gift Collection`, price: 1199, img: item.img || '/images/home/flower_coll_1.png' })}
                   className="flex-shrink-0 cursor-pointer group"
                   style={{ width: cardWidth || `${100 / VISIBLE}%` }}
                 >

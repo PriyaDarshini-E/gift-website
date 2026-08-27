@@ -26,12 +26,14 @@ export default function CategoryStrip() {
               key={item.label}
               className="flex flex-col items-center text-center group cursor-pointer flex-shrink-0"
             >
-              {/* Category Illustration Container - Enlarged and optimized for wide/horizontal illustrations */}
-              <div className="h-20 w-24 md:h-24 md:w-28 flex items-center justify-center group-hover:scale-108 transition-all duration-300">
+              {/* Category Illustration Container */}
+              <div className="h-20 w-24 md:h-24 md:w-28 flex items-center justify-center group-hover:scale-110 group-hover:-translate-y-1.5 transition-all duration-300 relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-amber-100/30 to-rose-100/30 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xs" />
                 <img
                   src={item.img}
                   alt={item.label}
-                  className="max-h-full max-w-full object-contain"
+                  className="max-h-full max-w-full object-contain filter group-hover:drop-shadow-md transition-all duration-300 animate-float-slow"
+                  style={{ animationDelay: `${(items.indexOf(item) % 2) * 0.3}s` }}
                 />
               </div>
               {/* Category Label */}
