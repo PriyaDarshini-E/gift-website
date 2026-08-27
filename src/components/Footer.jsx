@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Mail, ArrowRight, Check } from 'lucide-react';
+
 
 /* ── Inline Brand SVG Icons ─────────────────────────────── */
 function FacebookIcon() {
@@ -52,76 +54,43 @@ export default function Footer() {
       
       {/* ── Top Main Footer Navigation Grid ── */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-0 divide-y lg:divide-y-0 lg:divide-x divide-gray-200/80">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-0 divide-y md:divide-y-0 md:divide-x divide-gray-200/80">
           
           {/* Col 1: Policy Info */}
-          <div className="lg:pr-6 pt-4 lg:pt-0">
+          <div className="md:pr-8 pt-4 md:pt-0">
             <h3 className="text-sm font-bold text-gray-900 mb-4 tracking-tight">
               Policy Info
             </h3>
             <ul className="space-y-2.5 text-xs text-gray-600">
-              <li><a href="#terms" className="hover:text-gray-900 transition-colors">Terms & Conditions</a></li>
-              <li><a href="#privacy" className="hover:text-gray-900 transition-colors">Privacy Policy</a></li>
-              <li><a href="#use" className="hover:text-gray-900 transition-colors">Terms of Use</a></li>
-              <li><a href="#disclaimer" className="hover:text-gray-900 transition-colors">Disclaimer</a></li>
+              <li><Link to="/terms" className="hover:text-gray-900 transition-colors">Terms & Conditions</Link></li>
             </ul>
           </div>
 
           {/* Col 2: About Company */}
-          <div className="lg:px-6 pt-4 lg:pt-0">
+          <div className="md:px-8 pt-4 md:pt-0">
             <h3 className="text-sm font-bold text-gray-900 mb-4 tracking-tight">
               About Company
             </h3>
             <ul className="space-y-2.5 text-xs text-gray-600">
-              <li><a href="#about" className="hover:text-gray-900 transition-colors">About Us</a></li>
-              <li><a href="#team" className="hover:text-gray-900 transition-colors">Giftora Team</a></li>
-              <li><a href="#careers" className="hover:text-gray-900 transition-colors">Careers</a></li>
-              <li><a href="#testimonials" className="hover:text-gray-900 transition-colors">Testimonials</a></li>
-              <li><a href="#newsroom" className="hover:text-gray-900 transition-colors">News Room</a></li>
-              <li><a href="#blog" className="hover:text-gray-900 transition-colors">Blog</a></li>
+              <li><Link to="/about" className="hover:text-gray-900 transition-colors">About Us</Link></li>
+              <li><Link to="/careers" className="hover:text-gray-900 transition-colors">Careers</Link></li>
+              <li><Link to="/testimonials" className="hover:text-gray-900 transition-colors">Testimonials</Link></li>
             </ul>
           </div>
 
-          {/* Col 3: Giftora Business */}
-          <div className="lg:px-6 pt-4 lg:pt-0">
-            <h3 className="text-sm font-bold text-gray-900 mb-4 tracking-tight">
-              Giftora Business
-            </h3>
-            <ul className="space-y-2.5 text-xs text-gray-600">
-              <li><a href="#decoration" className="hover:text-gray-900 transition-colors">Decoration Services</a></li>
-              <li><a href="#corporate" className="hover:text-gray-900 transition-colors">Corporate Service</a></li>
-              <li><a href="#affiliate" className="hover:text-gray-900 transition-colors">Affiliate Program</a></li>
-              <li><a href="#retail" className="hover:text-gray-900 transition-colors">Retails Stores</a></li>
-              <li><a href="#franchise" className="hover:text-gray-900 transition-colors">Franchise</a></li>
-            </ul>
-          </div>
-
-          {/* Col 4: Need Help ? */}
-          <div className="lg:px-6 pt-4 lg:pt-0">
+          {/* Col 3: Need Help ? */}
+          <div className="md:px-8 pt-4 md:pt-0">
             <h3 className="text-sm font-bold text-gray-900 mb-4 tracking-tight">
               Need Help ?
             </h3>
             <ul className="space-y-2.5 text-xs text-gray-600">
-              <li><a href="#contact" className="hover:text-gray-900 transition-colors">Contact Us</a></li>
-              <li><a href="#faqs" className="hover:text-gray-900 transition-colors">FAQs</a></li>
+              <li><Link to="/contact" className="hover:text-gray-900 transition-colors">Contact Us</Link></li>
+              <li><Link to="/faqs" className="hover:text-gray-900 transition-colors">FAQs</Link></li>
             </ul>
           </div>
 
-          {/* Col 5: International Presence */}
-          <div className="lg:px-6 pt-4 lg:pt-0">
-            <h3 className="text-sm font-bold text-gray-900 mb-4 tracking-tight">
-              International Presence
-            </h3>
-            <ul className="space-y-2.5 text-xs text-gray-600">
-              <li><a href="#dubai" className="hover:text-gray-900 transition-colors">Dubai</a></li>
-              <li><a href="#qatar" className="hover:text-gray-900 transition-colors">Qatar</a></li>
-              <li><a href="#saudi" className="hover:text-gray-900 transition-colors">Saudi Arabia</a></li>
-              <li><a href="#singapore" className="hover:text-gray-900 transition-colors">Singapore</a></li>
-            </ul>
-          </div>
-
-          {/* Col 6: Subscribe Now Form */}
-          <div className="lg:pl-6 pt-4 lg:pt-0">
+          {/* Col 4: Subscribe Now Form */}
+          <div className="md:pl-8 pt-4 md:pt-0">
             <h3 className="text-sm font-bold text-gray-900 mb-2 tracking-tight">
               Subscribe Now
             </h3>
@@ -159,27 +128,6 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* ── Middle Corporate Legal Information ── */}
-      <div className="border-t border-gray-200/80 bg-[#edf0f4] py-8 text-center text-[11px] text-gray-500 leading-relaxed px-4">
-        <div className="max-w-5xl mx-auto space-y-2">
-          <p>
-            <span className="font-semibold text-gray-700">Company Name:</span> Giftora E Retail Private Limited &nbsp;|&nbsp; 
-            <span className="font-semibold text-gray-700"> CIN:</span> U52100HR2021PTC118882 &nbsp;|&nbsp; 
-            <span className="font-semibold text-gray-700"> Regd. Office:</span> Plot No. 75P, Sector-44, Gurugram, Haryana - 122003
-          </p>
-          <p>
-            <span className="font-semibold text-gray-700">Telephone No.:</span> +91-11-28802680 &nbsp;|&nbsp; 
-            <span className="font-semibold text-gray-700"> Grievance Resolution Officer Name:</span> Mr. Sagarjit Karmakar &nbsp;|&nbsp; 
-            <span className="font-semibold text-gray-700"> Contact No.:</span> +91 9212422000 / 9755-248-248 &nbsp;|&nbsp; 
-            <span className="font-semibold text-gray-700"> Email ID -</span> <a href="mailto:grievance@giftora.com" className="hover:underline text-gray-700">grievance@giftora.com</a>
-          </p>
-          <p className="pt-1">
-            <a href="#csr" className="text-blue-600 font-semibold hover:underline">
-              Corporate Social Responsibility (CSR) Policy
-            </a>
-          </p>
-        </div>
-      </div>
 
       {/* ── Bottom Strip: Social Media, Copyright, Payment Partners ── */}
       <div className="border-t border-gray-200/80 bg-[#e9ecf0] py-4">

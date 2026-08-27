@@ -1,50 +1,59 @@
 import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import { CartProvider } from './context/CartContext';
 import Header from './components/Header';
-import CategoryNav from './components/CategoryNav';
-import CategoryStrip from './components/CategoryStrip';
-import OccasionGifts from './components/OccasionGifts';
-import PromoBanners from './components/PromoBanners';
-import RakshaBandhan from './components/RakshaBandhan';
-import BestSellers from './components/BestSellers';
-import FlowersCollection from './components/FlowersCollection';
-import BirthdayGifts from './components/BirthdayGifts';
-// import SendRakhiCity from './components/SendRakhiCity';
-import GiftsForEveryone from './components/GiftsForEveryone';
-import FreshlyBakedCakes from './components/FreshlyBakedCakes';
-import GiftsForEveryFeeling from './components/GiftsForEveryFeeling';
-import NewlyLaunched from './components/NewlyLaunched';
-import PlantsForEveryVibe from './components/PlantsForEveryVibe';
-import JoyfulGiftingStories from './components/JoyfulGiftingStories';
-import TrustStats from './components/TrustStats';
-import ShopByBrands from './components/ShopByBrands';
-import SaveMoreOffers from './components/SaveMoreOffers';
 import Footer from './components/Footer';
+import ScrollToTop from './components/ScrollToTop';
+import HomePage from './pages/HomePage';
+import TermsAndConditions from './pages/TermsAndConditions';
+import AboutUs from './pages/AboutUs';
+import Careers from './pages/Careers';
+import Testimonials from './pages/Testimonials';
+import ContactUs from './pages/ContactUs';
+import FAQs from './pages/FAQs';
+import CategoryPage from './pages/CategoryPage';
+import CorporateGifting from './pages/CorporateGifting';
+
+// Interactive Drawers & Modals
+import CartDrawer from './components/drawers/CartDrawer';
+import LocationModal from './components/modals/LocationModal';
+import ProductModal from './components/modals/ProductModal';
+import RemindersModal from './components/modals/RemindersModal';
+import GiftFinderModal from './components/modals/GiftFinderModal';
+import OrderTrackerModal from './components/modals/OrderTrackerModal';
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-stone-50 animate-fade-in">
-      <Header />
-      <CategoryNav />
-      <CategoryStrip />
-      <OccasionGifts />
-      <PromoBanners />
-      <RakshaBandhan />
-      <BestSellers />
-      <FlowersCollection />
-      <BirthdayGifts />
-      <GiftsForEveryone />
-      <FreshlyBakedCakes />
-      <GiftsForEveryFeeling />
-      <NewlyLaunched />
-      <SaveMoreOffers />
-      <PlantsForEveryVibe />
-      <JoyfulGiftingStories />
-      <TrustStats />
-      <ShopByBrands />
+    <CartProvider>
+      <div className="min-h-screen bg-stone-50 animate-fade-in flex flex-col justify-between">
+        <ScrollToTop />
+        <div>
+          <Header />
+          <main>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/terms" element={<TermsAndConditions />} />
+              <Route path="/about" element={<AboutUs />} />
+              <Route path="/careers" element={<Careers />} />
+              <Route path="/testimonials" element={<Testimonials />} />
+              <Route path="/contact" element={<ContactUs />} />
+              <Route path="/faqs" element={<FAQs />} />
+              <Route path="/category/:slug" element={<CategoryPage />} />
+              <Route path="/corporate" element={<CorporateGifting />} />
+            </Routes>
+          </main>
+        </div>
+        <Footer />
 
-      {/* <SendRakhiCity /> */}
-
-      <Footer />
-    </div>
+        {/* Global Drawers & Modals */}
+        <CartDrawer />
+        <LocationModal />
+        <ProductModal />
+        <RemindersModal />
+        <GiftFinderModal />
+        <OrderTrackerModal />
+      </div>
+    </CartProvider>
   );
 }
+

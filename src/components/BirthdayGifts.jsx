@@ -1,133 +1,124 @@
 import React from 'react';
+import { Sparkles, ArrowRight, Gift, Star, ShoppingBag, Heart, Cake, PartyPopper } from 'lucide-react';
+import { useCart } from '../context/CartContext';
 
-/* ── Birthday Product Cards Data ─────────────────────────── */
-const products = [
-  { id: 1, label: 'Flowers',      img: '/images/home/bday_card_1.png' },
-  { id: 2, label: 'Cakes',        img: '/images/home/bday_card_2.png' },
-  { id: 3, label: 'Personalised', img: '/images/home/bday_card_3.png' },
-  { id: 4, label: 'Plants',       img: '/images/home/bday_card_4.png' },
-  { id: 5, label: 'Hampers',      img: '/images/home/bday_card_5.png' },
+/* ── Birthday Category Cards Data ─────────────────────────── */
+const birthdayCategories = [
+  { id: 1, label: 'Fresh Flowers', sub: 'Hand-picked Roses', price: 999, img: '/images/home/flower_coll_1.png', tag: 'Bestseller' },
+  { id: 2, label: 'Artisanal Cakes', sub: 'Red Velvet & Truffle', price: 699, img: '/images/home/cake_red_velvet.png', tag: 'Fresh Baked' },
+  { id: 3, label: 'Personalised Gifts', sub: 'Custom Keepsakes', price: 599, img: '/images/home/gift_personalised.png', tag: 'Custom' },
+  { id: 4, label: 'Exotic Plants', sub: 'Monstera & Bonsai', price: 899, img: '/images/home/occasion_housewarming.png', tag: 'Air Purifying' },
+  { id: 5, label: 'Luxury Hampers', sub: 'Gourmet Sweets', price: 1499, img: '/images/home/bday_card_5.png', tag: 'Luxe Combo' },
 ];
 
 export default function BirthdayGifts() {
+  const { openProductModal, formatPrice, addToCart } = useCart();
+
   return (
-    <div className="bg-white py-10 border-b border-gray-100">
+    <div className="bg-stone-50/60 py-14 border-b border-stone-200/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* ── Hero Banner ── */}
-        <div
-          className="relative w-full rounded-[20px] overflow-hidden mb-6"
-          style={{
-            background: 'linear-gradient(120deg, #e8583a 0%, #d4472a 40%, #c23c22 100%)',
-            minHeight: '200px',
-          }}
-        >
-          {/* Leaf / greenery decoration — top left */}
-          <div
-            className="absolute -top-4 -left-4 text-[80px] select-none pointer-events-none"
-            style={{ transform: 'rotate(-20deg)', opacity: 0.9 }}
-          >
-            🌿
-          </div>
-          <div
-            className="absolute top-0 left-10 text-[60px] select-none pointer-events-none"
-            style={{ transform: 'rotate(10deg)', opacity: 0.7 }}
-          >
-            🍃
-          </div>
+        {/* ── Premium Modern Hero Banner ── */}
+        <div className="relative w-full rounded-3xl overflow-hidden mb-10 bg-gradient-to-r from-amber-50 via-rose-50 to-orange-50 border border-rose-200/80 p-8 sm:p-12 shadow-xl flex flex-col md:flex-row items-center justify-between gap-8">
+          
+          {/* Background Decorative Floral & Confetti Glows */}
+          <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-rose-200/40 via-amber-200/30 to-transparent rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-10 left-10 w-72 h-72 bg-gradient-to-tr from-amber-200/40 via-rose-100/30 to-transparent rounded-full blur-2xl pointer-events-none" />
 
-          {/* Confetti / sparkle dots */}
-          {[
-            { top: '18%', left: '38%', size: '8px', color: '#ffd700' },
-            { top: '60%', left: '42%', size: '6px', color: '#ffffff' },
-            { top: '30%', left: '55%', size: '5px', color: '#ffd700' },
-            { top: '72%', left: '60%', size: '7px', color: '#ffffff' },
-            { top: '15%', left: '65%', size: '9px', color: '#ffd700' },
-            { top: '50%', left: '72%', size: '5px', color: '#ffffff' },
-          ].map((dot, i) => (
-            <div
-              key={i}
-              className="absolute rounded-full pointer-events-none"
-              style={{
-                top: dot.top, left: dot.left,
-                width: dot.size, height: dot.size,
-                backgroundColor: dot.color, opacity: 0.8,
-              }}
-            />
-          ))}
-
-          {/* Left — headline text */}
-          <div className="absolute left-8 top-1/2 -translate-y-1/2 z-10 max-w-[38%]">
-            <p className="text-white font-sans font-normal text-2xl sm:text-3xl leading-snug drop-shadow">
-              Joyful Gifts To
-            </p>
-            <p className="text-white font-sans font-extrabold text-2xl sm:text-3xl leading-snug drop-shadow">
-              Make It Special
-            </p>
-          </div>
-
-          {/* Right — birthday celebration illustration */}
-          <div className="absolute right-0 top-0 h-full flex items-end justify-end pr-8 pb-2 gap-3 pointer-events-none select-none">
-            {/* Bunting text */}
-            <div className="absolute top-4 right-8 flex gap-1">
-              {['H','A','P','P','Y','B','I','R','T','H','D','A','Y'].map((ch, i) => (
-                <span
-                  key={i}
-                  className="inline-flex items-center justify-center w-6 h-7 rounded-sm font-bold text-[11px]"
-                  style={{
-                    backgroundColor: i < 5 ? '#fde68a' : '#fca5a5',
-                    color: '#7c2d12',
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
-                    margin: i === 5 ? '0 4px 0 8px' : '0',
-                  }}
-                >
-                  {ch}
-                </span>
-              ))}
+          {/* Left Text Content */}
+          <div className="relative z-10 text-center md:text-left max-w-xl space-y-4">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 border border-rose-200/90 text-rose-900 text-xs font-extrabold tracking-wider uppercase shadow-xs">
+              <Sparkles className="w-3.5 h-3.5 text-rose-600 animate-pulse" />
+              Birthday Special Collection
             </div>
 
-            {/* Balloons */}
-            <div className="absolute top-14 right-4 flex gap-2 text-4xl">
-              <span style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}>🎈</span>
-              <span style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}>🎉</span>
-              <span style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))', fontSize: '28px' }}>🥂</span>
-            </div>
+            <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-gray-900 tracking-tight leading-[1.15]">
+              Joyful Gifts To <br className="hidden sm:block" />
+              <span className="bg-gradient-to-r from-olive-800 via-rose-700 to-amber-800 bg-clip-text text-transparent">Make It Special</span> 🎉
+            </h2>
 
-            {/* Cake illustration */}
-            <div className="relative">
-              <span
-                className="block text-[90px] leading-none"
-                style={{ filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.35))' }}
-              >
-                🎂
+            <p className="text-stone-600 text-xs sm:text-sm font-sans leading-relaxed max-w-md">
+              Surprise your loved ones with express same-day birthday cakes, fresh floral arrangements & personalized keepsake hampers.
+            </p>
+
+            <div className="pt-2 flex flex-wrap items-center justify-center md:justify-start gap-3">
+              <span className="text-xs font-bold text-olive-800 bg-white/90 border border-olive-200 px-3 py-1.5 rounded-xl shadow-2xs flex items-center gap-1.5">
+                <Cake className="w-3.5 h-3.5 text-olive-600" />
+                Same-Day Delivery
+              </span>
+              <span className="text-xs font-bold text-rose-800 bg-white/90 border border-rose-200 px-3 py-1.5 rounded-xl shadow-2xs flex items-center gap-1.5">
+                <PartyPopper className="w-3.5 h-3.5 text-rose-600" />
+                Free Message Card
               </span>
             </div>
           </div>
+
+          {/* Right — High-Res Studio Cake & Gifts Hero Showcase */}
+          <div className="relative z-10 flex-shrink-0 w-full md:w-80 lg:w-96">
+            <div className="relative rounded-2xl overflow-hidden shadow-2xl border-2 border-white aspect-[4/3] group cursor-pointer" onClick={() => openProductModal({ id: 101, name: 'Birthday Celebration Cake & Rose Combo', price: 1699, img: '/images/home/occasion_birthday.png' })}>
+              <img 
+                src="/images/home/occasion_birthday.png" 
+                alt="Birthday Celebration" 
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex flex-col justify-end p-4 text-white">
+                <span className="text-[10px] font-extrabold uppercase text-amber-300">Featured Surprise</span>
+                <span className="font-extrabold text-sm truncate">Luxury Birthday Cake & Gifts</span>
+              </div>
+            </div>
+          </div>
+
         </div>
 
-        {/* ── Product Grid — 5 category cards matching reference ── */}
-        <div className="grid grid-cols-5 gap-4">
-          {products.map(card => (
+        {/* ── Product Grid — 5 Elevated Category Cards ── */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          {birthdayCategories.map(card => (
             <div
               key={card.id}
-              className="flex flex-col items-center gap-3 cursor-pointer group"
+              onClick={() => openProductModal(card)}
+              className="bg-white rounded-3xl border border-stone-200/90 overflow-hidden shadow-xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group cursor-pointer"
             >
-              {/* Card Image Container */}
-              <div
-                className="w-full overflow-hidden rounded-[18px] shadow-sm group-hover:shadow-md transition-all duration-200"
-                style={{ aspectRatio: '4/5' }}
-              >
-                <img
-                  src={card.img}
-                  alt={card.label}
-                  className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300 select-none"
-                />
+              <div>
+                {/* Image Box */}
+                <div className="relative aspect-square overflow-hidden bg-stone-100">
+                  <img
+                    src={card.img}
+                    alt={card.label}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <span className="absolute top-2.5 right-2.5 px-2 py-0.5 bg-amber-500 text-white font-extrabold text-[9px] uppercase rounded-full shadow-xs">
+                    {card.tag}
+                  </span>
+                </div>
+
+                {/* Card Details */}
+                <div className="p-4 space-y-1">
+                  <h3 className="font-bold text-xs text-gray-900 group-hover:text-olive-700 transition-colors truncate">
+                    {card.label}
+                  </h3>
+                  <p className="text-[10px] text-stone-500 font-medium truncate">{card.sub}</p>
+                  
+                  <div className="pt-1.5 flex items-baseline justify-between">
+                    <span className="font-extrabold text-xs text-olive-700">{formatPrice(card.price)}</span>
+                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">4.9 ★</span>
+                  </div>
+                </div>
               </div>
 
-              {/* Category Name Label below */}
-              <p className="text-[15px] font-bold text-gray-800 font-sans text-center group-hover:text-gray-900">
-                {card.label}
-              </p>
+              {/* Quick Add CTA */}
+              <div className="p-4 pt-0">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    addToCart(card);
+                  }}
+                  className="w-full py-2 rounded-xl bg-stone-900 group-hover:bg-olive-600 text-white font-bold text-[11px] shadow-xs transition-colors flex items-center justify-center gap-1.5"
+                >
+                  <ShoppingBag className="w-3 h-3" />
+                  Quick Add
+                </button>
+              </div>
+
             </div>
           ))}
         </div>

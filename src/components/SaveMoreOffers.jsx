@@ -124,12 +124,15 @@ export default function SaveMoreOffers() {
                   className="flex-shrink-0 cursor-pointer group"
                   style={{ width: cardWidth || `${100 / VISIBLE}%` }}
                 >
-                  {/* Coupon Ticket Card */}
+                  {/* Ticket Card Wrapper */}
                   <div
-                    className={`relative ${item.bgColor} border ${item.borderColor} rounded-[22px]
+                    className={`w-full ${item.bgColor} border ${item.borderColor} rounded-[20px] relative overflow-hidden
                       p-5 sm:p-6 min-h-[175px] sm:min-h-[190px] flex flex-col justify-between
-                      group-hover:shadow-md transition-all duration-200 select-none`}
+                      group-hover:shadow-xl group-hover:-translate-y-1 transition-all duration-300 select-none`}
                   >
+                    {/* Metallic Sheen Pass on Hover */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-shimmer pointer-events-none" />
+
                     {/* Top Notch Cutout */}
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-white border-b border-gray-200/50" />
 

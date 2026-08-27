@@ -8,9 +8,9 @@ const cakes = [
   { id: 3, name: 'Fresh Fruit',  img: '/images/home/fruits.png',       gradient: 'from-[#f9e0ae] via-[#f7a470] to-[#e66767]', emoji: '🍓' },
   { id: 4, name: 'Combos',       img: '/images/home/combos.png',       gradient: 'from-[#2d4d3a] via-[#3d6b52] to-[#1e3628]', emoji: '🎁' },
   { id: 5, name: 'Pineapple',    img: '/images/home/pineapple.png',    gradient: 'from-[#fef08a] via-[#fde047] to-[#eab308]', emoji: '🍍' },
-  { id: 6, name: 'Red Velvet',   img: null,                             gradient: 'from-[#9f1239] via-[#881337] to-[#4c0519]', emoji: '🧁' },
-  { id: 7, name: 'Black Forest', img: null,                             gradient: 'from-[#312e81] via-[#1e1b4b] to-[#0f172a]', emoji: '🍒' },
-  { id: 8, name: 'Truffle',      img: null,                             gradient: 'from-[#581c87] via-[#3b0764] to-[#2e1065]', emoji: '🎂' },
+  { id: 6, name: 'Red Velvet',   img: '/images/home/cake_red_velvet.png', gradient: 'from-[#9f1239] via-[#881337] to-[#4c0519]', emoji: '🧁' },
+  { id: 7, name: 'Black Forest', img: '/images/home/cake_black_forest.png', gradient: 'from-[#312e81] via-[#1e1b4b] to-[#0f172a]', emoji: '🍒' },
+  { id: 8, name: 'Truffle',      img: '/images/home/chocolate.png',    gradient: 'from-[#581c87] via-[#3b0764] to-[#2e1065]', emoji: '🎂' },
 ];
 
 const CARD_GAP = 20; // px between cards
