@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { createEnquiry } from '../services/enquiryService';
 import { 
   Sparkles, 
   Building2, 
@@ -11,7 +12,9 @@ import {
   Users, 
   Briefcase, 
   Truck, 
-  BadgeCheck 
+  BadgeCheck,
+  Loader2,
+  AlertCircle
 } from 'lucide-react';
 
 const corporateBenefits = [
@@ -38,7 +41,9 @@ const corporateBenefits = [
 ];
 
 export default function CorporateGifting() {
-  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(null);
+  const [submitError, setSubmitError] = useState(null);
   const [formData, setFormData] = useState({
     company: '',
     contactName: '',
@@ -49,11 +54,32 @@ export default function CorporateGifting() {
     details: ''
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
+    setSubmitting(true);
+    setSubmitSuccess(null);
+    setSubmitError(null);
+
+    const res = await createEnquiry({
+      name: `${formData.contactName} (${formData.company || 'Corporate Client'})`,
+      mobile: formData.phone,
+      address: `Email: ${formData.email} | Qty: ${formData.quantity} | Budget: ${formData.budget} | Notes: ${formData.details || 'None'}`,
+      items: [
+        {
+          productId: '1',
+          variantId: '1',
+          quantity: 1,
+          price: 1500,
+          originalPrice: 1500,
+          bulkPrice: 1200
+        }
+      ]
+    });
+
+    setSubmitting(false);
+
+    if (res.success) {
+      setSubmitSuccess(res.message);
       setFormData({
         company: '',
         contactName: '',
@@ -63,7 +89,11 @@ export default function CorporateGifting() {
         budget: '₹1,000 - ₹2,500 per gift',
         details: ''
       });
-    }, 3000);
+      setTimeout(() => setSubmitSuccess(null), 7000);
+    } else {
+      setSubmitError(res.error);
+      setTimeout(() => setSubmitError(null), 6000);
+    }
   };
 
   return (
@@ -134,14 +164,20 @@ export default function CorporateGifting() {
             <p className="text-xs text-stone-500 mt-1">Fill out the form below and our corporate gifting team will respond within 2 hours.</p>
           </div>
 
-          {submitted ? (
+          {submitSuccess ? (
             <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-8 text-center animate-fade-in">
               <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto mb-3 animate-bounce" />
               <h3 className="font-bold text-xl text-gray-900">Inquiry Received!</h3>
-              <p className="text-xs text-stone-600 mt-2">Our corporate Account Executive will email your customized catalog and price quotation shortly.</p>
+              <p className="text-xs text-stone-600 mt-2">{submitSuccess}</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
+              {submitError && (
+                <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 font-semibold flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0" />
+                  <span>{submitError}</span>
+                </div>
+              )}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-stone-700 mb-1">Company Name *</label>
@@ -190,9 +226,22 @@ export default function CorporateGifting() {
                 <textarea rows={3} placeholder="Tell us about the occasion (Diwali, New Year, Employee Appreciation) or specific items needed..." value={formData.details} onChange={(e) => setFormData({...formData, details: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-stone-300 text-xs focus:outline-none focus:ring-2 focus:ring-olive-500/30 bg-stone-50" />
               </div>
 
-              <button type="submit" className="w-full py-4 rounded-xl bg-olive-600 hover:bg-olive-700 text-white font-extrabold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
-                <Send className="w-4 h-4" />
-                Submit Bulk Quote Request
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full py-4 rounded-xl bg-olive-600 hover:bg-olive-700 text-white font-extrabold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+              >
+                {submitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Submitting Inquiry...</span>
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-4 h-4" />
+                    <span>Submit Bulk Quote Request</span>
+                  </>
+                )}
               </button>
             </form>
           )}

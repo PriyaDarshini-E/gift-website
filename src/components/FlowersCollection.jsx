@@ -1,26 +1,44 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { ChevronLeft, ChevronRight, Flower2, ArrowRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowRight, Eye, ShoppingBag, Coffee } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useProducts } from '../context/ProductContext';
+import { useCategories } from '../context/CategoryContext';
 import { useCart } from '../context/CartContext';
+import FixedImage from './common/FixedImage';
 
-/* ── Flower collection cards ──────────── */
-const flowerCards = [
-  { id: 1, name: 'Orchids',       img: '/images/home/flower_coll_1.png', gradient: 'from-violet-200 via-purple-100 to-fuchsia-100',  emoji: '🌸' },
-  { id: 2, name: 'Crochet',       img: '/images/home/flower_coll_2.png', gradient: 'from-yellow-200 via-amber-100 to-orange-100',    emoji: '🌻' },
-  { id: 3, name: 'Centerpiece',   img: '/images/home/flower_coll_3.png', gradient: 'from-rose-100 via-pink-100 to-peach-50',         emoji: '💐' },
-  { id: 4, name: 'Sunny Blooms',  img: '/images/home/flower_coll_4.png', gradient: 'from-amber-200 via-yellow-100 to-lime-100',      emoji: '🌼' },
-  { id: 5, name: 'Dried Flowers', img: '/images/home/flower_coll_5.png', gradient: 'from-orange-100 via-amber-50 to-stone-100',      emoji: '🌾' },
-];
-
-const BLUE     = '#d6ecf8';
 const CARD_GAP = 20;
 
-export default function FlowersCollection() {
-  const { openProductModal } = useCart();
+export default function FlowersCollection({ 
+  title = "Vibrant Flowers & Fresh Bouquets", 
+  subtitle = "Handpicked fresh roses, orchids, lilies & exotic floral hampers delivered same day", 
+  categorySlug = "flowers" 
+}) {
+  const { products: apiProducts, loading } = useProducts();
+  const { openProductModal, addToCart } = useCart();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [visibleCount, setVisibleCount] = useState(5);
+  const [cardWidth, setCardWidth] = useState(0);
+  const containerRef = useRef(null);
 
-  const touchStartX = useRef(0);
-  const touchEndX = useRef(0);
+  const rawProducts = Array.isArray(apiProducts) ? apiProducts : [];
+
+  // Dynamically extract flower products
+  const flowerProducts = rawProducts.filter(p => {
+    const name = (p.name || '').toLowerCase();
+    const cat = (p.category || '').toLowerCase();
+    const subCat = (p.subCategory || '').toLowerCase();
+    return (
+      cat.includes('flower') || 
+      subCat.includes('flower') || 
+      cat.includes('rose') || 
+      name.includes('flower') || 
+      name.includes('rose') || 
+      name.includes('bouquet') ||
+      name.includes('orchid')
+    );
+  }).slice(0, 15);
+
+  const displayList = flowerProducts.length > 0 ? flowerProducts : rawProducts.slice(0, 10);
 
   // Responsive breakpoint tracking
   useEffect(() => {
@@ -39,7 +57,20 @@ export default function FlowersCollection() {
     return () => window.removeEventListener('resize', updateVisible);
   }, []);
 
-  const maxIndex = Math.max(0, flowerCards.length - visibleCount);
+  const measure = useCallback(() => {
+    if (containerRef.current) {
+      const totalGap = CARD_GAP * (visibleCount - 1);
+      setCardWidth((containerRef.current.clientWidth - totalGap) / visibleCount);
+    }
+  }, [visibleCount]);
+
+  useEffect(() => {
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [measure]);
+
+  const maxIndex = Math.max(0, displayList.length - visibleCount);
   const safeCurrentIndex = Math.min(currentIndex, maxIndex);
 
   const showLeft = safeCurrentIndex > 0;
@@ -53,134 +84,138 @@ export default function FlowersCollection() {
     setCurrentIndex((prev) => Math.min(maxIndex, prev + 1));
   }, [maxIndex]);
 
-  // Touch Swipe Handlers for Mobile
-  const handleTouchStart = (e) => {
-    touchStartX.current = e.targetTouches[0].clientX;
-  };
+  const translateX = safeCurrentIndex * (cardWidth + CARD_GAP);
 
-  const handleTouchMove = (e) => {
-    touchEndX.current = e.targetTouches[0].clientX;
-  };
+  if (loading && rawProducts.length === 0) {
+    return null;
+  }
 
-  const handleTouchEnd = () => {
-    if (!touchStartX.current || !touchEndX.current) return;
-    const distance = touchStartX.current - touchEndX.current;
-    if (distance > 40 && showRight) {
-      handleNext();
-    } else if (distance < -40 && showLeft) {
-      handlePrev();
-    }
-    touchStartX.current = 0;
-    touchEndX.current = 0;
-  };
+  if (displayList.length === 0) {
+    return null;
+  }
 
   return (
-    <section className="bg-[#d6ecf8] py-14 border-b border-sky-100 relative overflow-hidden">
-      {/* Floating Petal Particles Background */}
-      <div className="absolute top-4 left-10 text-2xl animate-float-slow opacity-50 pointer-events-none select-none">🌸</div>
-      <div className="absolute bottom-6 right-20 text-3xl animate-float-slow opacity-40 pointer-events-none select-none" style={{ animationDelay: '2s' }}>💐</div>
-      <div className="absolute top-12 right-1/3 text-xl animate-float-slow opacity-50 pointer-events-none select-none" style={{ animationDelay: '1s' }}>✨</div>
-
+    <section className="bg-gradient-to-b from-[#e8f3fa] to-[#f4f9fd] py-14 border-b border-sky-100 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
         {/* Header */}
-        <div className="flex items-end justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8">
           <div>
+            <div className="flex items-center gap-1.5 text-xs font-bold text-sky-800 uppercase tracking-wider mb-1.5">
+              <Coffee className="w-3.5 h-3.5 text-sky-600" />
+              <span>Signature Drinkware</span>
+            </div>
             <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-gray-900 tracking-tight flex items-center gap-2">
-              Flowers Collection
-              <Flower2 className="w-6 h-6 text-pink-500 animate-spin-slow" />
+              {title}
             </h2>
-            <p className="text-gray-600 text-sm mt-1 font-sans">
-              Handpicked floral arrangements for moments that matter ✨
+            <p className="text-gray-600 text-xs sm:text-sm mt-1 font-sans">
+              {subtitle}
             </p>
           </div>
 
-          <button className="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-olive-700 hover:text-olive-800 transition-colors group/header">
-            Explore All Flowers
+          <Link 
+            to={`/category/${categorySlug}`}
+            className="hidden sm:inline-flex items-center gap-1 text-sm font-bold text-sky-900 hover:text-sky-700 transition-colors group/header"
+          >
+            Explore All Drinkware
             <ArrowRight className="w-4 h-4 group-hover/header:translate-x-1 transition-transform" />
-          </button>
+          </Link>
         </div>
 
-        {/* Slider Container */}
-        <div 
-          className="relative group/slider"
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-        >
+        {/* Carousel Container */}
+        <div className="relative" ref={containerRef}>
 
-          {/* Left Arrow Button */}
+          {/* Left Arrow */}
           <button
             onClick={handlePrev}
-            aria-label="Previous Flowers"
-            className={`absolute -left-4 sm:-left-5 top-[40%] -translate-y-1/2 z-20 w-11 h-11 rounded-full
-              bg-white/95 backdrop-blur-sm shadow-lg border border-gray-200 flex items-center justify-center
-              text-gray-700 hover:text-olive-600 hover:border-olive-300 hover:scale-105 transition-all duration-300
+            aria-label="Previous"
+            className={`absolute -left-4 top-[45%] -translate-y-1/2 z-20 w-10 h-10 rounded-full
+              bg-white shadow-lg border border-sky-200 flex items-center justify-center
+              text-gray-700 hover:text-sky-900 transition-all duration-200 cursor-pointer
               ${showLeft ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
           >
             <ChevronLeft className="w-5 h-5 stroke-[2.5]" />
           </button>
 
-          {/* Clip track container */}
-          <div className="overflow-hidden py-3 px-1 -my-2 -mx-0.5">
+          {/* Track */}
+          <div className="overflow-hidden py-2">
             <div
-              className="flex transition-transform duration-500 cubic-bezier(0.25, 1, 0.5, 1)"
+              className="flex"
               style={{
                 gap: `${CARD_GAP}px`,
-                willChange: 'transform',
-                transform: `translate3d(calc(-${safeCurrentIndex} * (100% / ${visibleCount} + ${CARD_GAP / visibleCount}px)), 0, 0)`,
+                transform: cardWidth ? `translateX(-${translateX}px)` : 'none',
+                transition: 'transform 420ms ease-in-out',
               }}
             >
-              {flowerCards.map((card, idx) => (
+              {displayList.map((item) => (
                 <div
-                  key={card.id}
-                  className="flex-shrink-0"
-                  style={{ 
-                    width: `calc((100% - ${(visibleCount - 1) * CARD_GAP}px) / ${visibleCount})`
-                  }}
+                  key={item.id}
+                  className="flex-shrink-0 group"
+                  style={{ width: cardWidth || `${100 / visibleCount}%` }}
                 >
-                  <div className="group/flower flex flex-col items-center gap-3 cursor-pointer">
+                  <div className="bg-white rounded-2xl p-3 shadow-xs hover:shadow-md transition-all duration-300 border border-sky-100 flex flex-col justify-between h-full">
                     
-                    {/* Category name */}
-                    <p className="text-[15px] font-bold text-gray-800 font-sans text-center w-full group-hover/flower:text-rose-600 transition-colors">
-                      {card.name}
-                    </p>
-
-                    {/* Image Container Card */}
-                    <div
-                      className="w-full bg-white rounded-[22px] shadow-sm overflow-hidden border border-gray-200/80
-                        group-hover/flower:border-rose-300 group-hover/flower:shadow-xl transition-all duration-300
-                        transform group-hover/flower:-translate-y-1 flex items-center justify-center"
-                      style={{ aspectRatio: '1 / 1' }}
+                    {/* Image Area */}
+                    <div 
+                      onClick={() => openProductModal(item)}
+                      className="w-full aspect-square bg-sky-50/60 rounded-xl overflow-hidden flex items-center justify-center relative cursor-pointer"
                     >
-                      {card.img ? (
-                        <img
-                          src={card.img}
-                          alt={card.name}
-                          loading={idx < 4 ? 'eager' : 'lazy'}
-                          decoding="async"
-                          width="240"
-                          height="240"
-                          className="w-full h-full object-cover group-hover/flower:scale-105 transition-transform duration-500 ease-out select-none"
-                        />
-                      ) : (
-                        <div className={`w-full h-full flex items-center justify-center bg-gradient-to-br ${card.gradient}`}>
-                          <span className="text-5xl select-none opacity-60">{card.emoji}</span>
-                        </div>
+                      <FixedImage
+                        src={item.img || item.image}
+                        alt={item.name}
+                        type="product"
+                        containerClassName="w-full h-full"
+                        imageClassName="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300"
+                      />
+
+                      {item.brand && (
+                        <span className="absolute top-2 left-2 px-2 py-0.5 bg-sky-900/80 backdrop-blur-xs text-white text-[9px] font-bold rounded-full uppercase tracking-wider">
+                          {item.brand}
+                        </span>
                       )}
+
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openProductModal(item);
+                        }}
+                        className="absolute bottom-2 inset-x-2 py-1.5 bg-white/95 backdrop-blur-xs text-gray-900 rounded-lg text-xs font-bold shadow-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1 hover:bg-white cursor-pointer"
+                      >
+                        <Eye className="w-3.5 h-3.5 text-sky-700" />
+                        <span>Quick View</span>
+                      </button>
                     </div>
 
-                    {/* Order Now Button */}
-                    <button
-                      onClick={() => openProductModal({ id: card.id, name: `${card.name} Arrangement`, price: 999, img: card.img })}
-                      className="w-full flex items-center justify-center gap-1 bg-white border border-gray-200
-                        rounded-full py-2.5 text-[13px] font-semibold text-gray-700 font-sans
-                        group-hover/flower:bg-olive-600 group-hover/flower:text-white group-hover/flower:border-olive-600
-                        transition-all duration-300 shadow-xs"
-                    >
-                      Order Now
-                      <ChevronRight className="w-3.5 h-3.5 stroke-[2.5] group-hover/flower:translate-x-1 transition-transform" />
-                    </button>
+                    {/* Details */}
+                    <div className="pt-3 flex flex-col justify-between flex-1">
+                      <p 
+                        onClick={() => openProductModal(item)}
+                        className="text-[13px] font-semibold text-gray-800 font-sans line-clamp-2 hover:text-sky-700 transition-colors cursor-pointer mb-1.5"
+                      >
+                        {item.name}
+                      </p>
+
+                      <div>
+                        <div className="flex items-baseline gap-2 mb-2.5">
+                          <span className="text-[14px] font-extrabold text-gray-900 font-sans">
+                            ₹{Number(item.price).toLocaleString('en-IN')}
+                          </span>
+                          {item.originalPrice && item.originalPrice > item.price && (
+                            <span className="text-[11px] text-gray-400 line-through font-sans">
+                              ₹{Number(item.originalPrice).toLocaleString('en-IN')}
+                            </span>
+                          )}
+                        </div>
+
+                        <button
+                          onClick={() => addToCart(item, 1)}
+                          className="w-full py-2 bg-sky-50 hover:bg-sky-700 text-sky-900 hover:text-white rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                        >
+                          <ShoppingBag className="w-3.5 h-3.5" />
+                          <span>Add to Enquiry</span>
+                        </button>
+                      </div>
+                    </div>
 
                   </div>
                 </div>
@@ -191,10 +226,10 @@ export default function FlowersCollection() {
           {/* Right Arrow Button */}
           <button
             onClick={handleNext}
-            aria-label="Next Flowers"
-            className={`absolute -right-4 sm:-right-5 top-[40%] -translate-y-1/2 z-20 w-11 h-11 rounded-full
-              bg-white/95 backdrop-blur-sm shadow-lg border border-gray-200 flex items-center justify-center
-              text-gray-700 hover:text-olive-600 hover:border-olive-300 hover:scale-105 transition-all duration-300
+            aria-label="Next"
+            className={`absolute -right-4 top-[45%] -translate-y-1/2 z-20 w-10 h-10 rounded-full
+              bg-white shadow-lg border border-sky-200 flex items-center justify-center
+              text-gray-700 hover:text-sky-900 transition-all duration-200 cursor-pointer
               ${showRight ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
           >
             <ChevronRight className="w-5 h-5 stroke-[2.5]" />
@@ -222,4 +257,3 @@ export default function FlowersCollection() {
     </section>
   );
 }
-

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useCompany } from '../context/CompanyContext';
+import { createEnquiry } from '../services/enquiryService';
 import { 
   Sparkles, 
   Phone, 
@@ -11,41 +13,16 @@ import {
   Send, 
   CheckCircle2,
   HelpCircle,
-  Headphones
+  Headphones,
+  Loader2,
+  AlertCircle
 } from 'lucide-react';
 
-const contactCards = [
-  {
-    icon: Phone,
-    title: 'Customer Hotline',
-    detail: '+91 98765 43210',
-    sub: 'Toll-free 24/7 Support',
-    color: 'bg-rose-100 text-rose-700 border-rose-200'
-  },
-  {
-    icon: Mail,
-    title: 'Email Support',
-    detail: 'support@giftora.com',
-    sub: 'Quick response under 2 hours',
-    color: 'bg-amber-100 text-amber-700 border-amber-200'
-  },
-  {
-    icon: MapPin,
-    title: 'Corporate Headquarters',
-    detail: 'Giftora E-Retail Pvt Ltd',
-    sub: 'Sector 44, Gurugram, Haryana 122003',
-    color: 'bg-emerald-100 text-emerald-700 border-emerald-200'
-  },
-  {
-    icon: Clock,
-    title: 'Operating Hours',
-    detail: '24 Hours / 7 Days a Week',
-    sub: '365 Days Express Delivery',
-    color: 'bg-sky-100 text-sky-700 border-sky-200'
-  }
-];
-
 export default function ContactUs() {
+  const { company } = useCompany();
+  const [submitting, setSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(null);
+  const [submitError, setSubmitError] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -55,13 +32,63 @@ export default function ContactUs() {
     message: ''
   });
 
-  const [submitted, setSubmitted] = useState(false);
+  const contactCards = [
+    {
+      icon: Phone,
+      title: 'Customer Hotline',
+      detail: company?.phone || '+91 98765 43210',
+      sub: 'Toll-free 24/7 Support',
+      color: 'bg-rose-100 text-rose-700 border-rose-200'
+    },
+    {
+      icon: Mail,
+      title: 'Email Support',
+      detail: company?.email || 'support@giftora.com',
+      sub: 'Quick response under 2 hours',
+      color: 'bg-amber-100 text-amber-700 border-amber-200'
+    },
+    {
+      icon: MapPin,
+      title: 'Corporate Headquarters',
+      detail: company?.name || 'Giftora E-Retail Pvt Ltd',
+      sub: company?.address || 'Sector 44, Gurugram, Haryana 122003',
+      color: 'bg-emerald-100 text-emerald-700 border-emerald-200'
+    },
+    {
+      icon: Clock,
+      title: 'Operating Hours',
+      detail: '24 Hours / 7 Days a Week',
+      sub: '365 Days Express Delivery',
+      color: 'bg-sky-100 text-sky-700 border-sky-200'
+    }
+  ];
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
+    setSubmitting(true);
+    setSubmitSuccess(null);
+    setSubmitError(null);
+
+    const res = await createEnquiry({
+      name: formData.name,
+      mobile: formData.phone,
+      address: `Email: ${formData.email} | Category: ${formData.category} | OrderID: ${formData.orderId || 'N/A'} | Note: ${formData.message}`,
+      items: [
+        {
+          productId: '1',
+          variantId: '1',
+          quantity: 1,
+          price: 999,
+          originalPrice: 999,
+          bulkPrice: 999,
+        }
+      ]
+    });
+
+    setSubmitting(false);
+
+    if (res.success) {
+      setSubmitSuccess(res.message || 'Thank you for reaching out to Giftora. One of our customer care specialists will reply to your email shortly.');
       setFormData({
         name: '',
         email: '',
@@ -70,7 +97,11 @@ export default function ContactUs() {
         category: 'General Query',
         message: ''
       });
-    }, 3000);
+      setTimeout(() => setSubmitSuccess(null), 8000);
+    } else {
+      setSubmitError(res.error || 'Failed to submit inquiry. Please try again.');
+      setTimeout(() => setSubmitError(null), 6000);
+    }
   };
 
   return (
@@ -141,16 +172,22 @@ export default function ContactUs() {
               </h2>
             </div>
 
-            {submitted ? (
+            {submitSuccess ? (
               <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-8 text-center animate-fade-in">
                 <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto mb-3 animate-bounce" />
                 <h3 className="font-bold text-xl text-gray-900">Message Sent Successfully!</h3>
                 <p className="text-xs text-stone-600 mt-2 leading-relaxed">
-                  Thank you for reaching out to Giftora. One of our customer care specialists will reply to your email shortly.
+                  {submitSuccess}
                 </p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
+                {submitError && (
+                  <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 font-semibold flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0" />
+                    <span>{submitError}</span>
+                  </div>
+                )}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-bold text-stone-700 mb-1">Your Full Name *</label>
@@ -231,10 +268,20 @@ export default function ContactUs() {
 
                 <button
                   type="submit"
-                  className="w-full py-4 rounded-xl bg-olive-600 hover:bg-olive-700 text-white font-extrabold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2"
+                  disabled={submitting}
+                  className="w-full py-4 rounded-xl bg-olive-600 hover:bg-olive-700 text-white font-extrabold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
                 >
-                  <Send className="w-4 h-4" />
-                  Send Message Now
+                  {submitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Sending Message...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4" />
+                      <span>Send Message Now</span>
+                    </>
+                  )}
                 </button>
               </form>
             )}
@@ -263,9 +310,8 @@ export default function ContactUs() {
             <div className="pt-6 border-t border-rose-200/60">
               <h4 className="font-bold text-xs text-gray-900 mb-2">Corporate HQ Location</h4>
               <p className="text-xs text-stone-600 leading-relaxed font-sans">
-                Giftora E-Retail Private Limited<br />
-                Building 5B, DLF Cyber City, Sector 24,<br />
-                Gurugram, Haryana 122002, India.
+                {company?.name || 'Memory Creators'}<br />
+                {company?.address || 'Jayanagar 9th Block, Bangalore – 560 043 Karnataka.'}
               </p>
             </div>
           </div>
