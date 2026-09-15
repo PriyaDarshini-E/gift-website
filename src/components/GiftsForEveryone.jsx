@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import FixedImage from './common/FixedImage';
 
-/* ── Recipient data ──────────────────────────────────────── */
-const recipients = [
+const DEFAULT_RECIPIENTS = [
   { id: 1,  label: 'Him',        img: '/images/home/GiftsForHim.png' },
   { id: 2,  label: 'Her',        img: '/images/home/GiftsForHer.png' },
   { id: 3,  label: 'Kids',       img: '/images/home/GiftsForkids.png' },
@@ -18,7 +18,8 @@ const recipients = [
 const CARD_GAP = 16;
 const VISIBLE  = 6;
 
-export default function GiftsForEveryone() {
+export default function GiftsForEveryone({ data = DEFAULT_RECIPIENTS }) {
+  const recipients = Array.isArray(data) && data.length > 0 ? data : DEFAULT_RECIPIENTS;
   const [currentIndex, setCurrentIndex] = useState(0);
   const [cardWidth, setCardWidth]       = useState(0);
   const containerRef = useRef(null);
@@ -83,20 +84,21 @@ export default function GiftsForEveryone() {
             >
               {recipients.map(person => (
                 <div
-                  key={person.id}
+                  key={person.id || person.label}
                   className="flex-shrink-0 flex flex-col items-center gap-2 cursor-pointer group"
                   style={{ width: cardWidth || `${100 / VISIBLE}%` }}
                 >
                   {/* Card */}
                   <div
                     className="relative w-full overflow-hidden rounded-[16px] group-hover:scale-[1.03]
-                      group-hover:shadow-md transition-all duration-200 bg-gray-50 flex items-center justify-center"
-                    style={{ aspectRatio: '1 / 1' }}
+                      group-hover:shadow-md transition-all duration-200 bg-gray-50 flex items-center justify-center aspect-square"
                   >
-                    <img
-                      src={person.img}
+                    <FixedImage
+                      src={person.img || person.image}
                       alt={person.label}
-                      className="w-full h-full object-cover select-none"
+                      type="avatar"
+                      containerClassName="w-full h-full"
+                      imageClassName="w-full h-full object-cover select-none"
                     />
                   </div>
 

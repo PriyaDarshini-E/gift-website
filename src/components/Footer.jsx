@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, ArrowRight, Check } from 'lucide-react';
-
+import { Mail, ArrowRight, Check, Loader2 } from 'lucide-react';
+import { useCompany } from '../context/CompanyContext';
+import { createNewsletter } from '../services/newsletterService';
 
 /* ── Inline Brand SVG Icons ─────────────────────────────── */
 function FacebookIcon() {
@@ -37,17 +38,35 @@ function LinkedinIcon() {
 }
 
 export default function Footer() {
+  const { company } = useCompany();
   const [email, setEmail] = useState('');
-  const [subscribed, setSubscribed] = useState(false);
+  const [subscribing, setSubscribing] = useState(false);
+  const [subscribedMsg, setSubscribedMsg] = useState(null);
+  const [subscribeError, setSubscribeError] = useState(null);
 
-  const handleSubscribe = (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault();
-    if (email.trim()) {
-      setSubscribed(true);
-      setTimeout(() => setSubscribed(false), 4000);
+    if (!email.trim() || subscribing) return;
+
+    setSubscribing(true);
+    setSubscribedMsg(null);
+    setSubscribeError(null);
+
+    const res = await createNewsletter(email);
+    setSubscribing(false);
+
+    if (res.success) {
+      setSubscribedMsg(res.message);
       setEmail('');
+      setTimeout(() => setSubscribedMsg(null), 5000);
+    } else {
+      setSubscribeError(res.error);
+      setTimeout(() => setSubscribeError(null), 5000);
     }
   };
+
+  const companyName = company?.name || 'Giftora';
+  const copyrightText = company?.copyright || `© 1994-${new Date().getFullYear()} ${companyName.toLowerCase()}.com. All rights reserved.`;
 
   return (
     <footer className="bg-[#f0f3f6] border-t border-gray-200 font-sans text-gray-700">
@@ -107,20 +126,33 @@ export default function Footer() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter email address"
                   required
-                  className="w-full pl-10 pr-10 py-2.5 bg-white border border-gray-300 rounded-xl text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-olive-600 focus:ring-1 focus:ring-olive-600 shadow-sm transition-all"
+                  disabled={subscribing}
+                  className="w-full pl-10 pr-10 py-2.5 bg-white border border-gray-300 rounded-xl text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-olive-600 focus:ring-1 focus:ring-olive-600 shadow-sm transition-all disabled:opacity-60"
                 />
                 <button
                   type="submit"
-                  className="absolute right-2.5 p-1 text-gray-500 hover:text-gray-900 transition-colors"
+                  disabled={subscribing}
+                  className="absolute right-2.5 p-1 text-gray-500 hover:text-gray-900 transition-colors disabled:opacity-50 cursor-pointer"
                   aria-label="Subscribe"
                 >
-                  {subscribed ? <Check className="w-4 h-4 text-emerald-600" /> : <ArrowRight className="w-4 h-4" />}
+                  {subscribing ? (
+                    <Loader2 className="w-4 h-4 text-olive-600 animate-spin" />
+                  ) : subscribedMsg ? (
+                    <Check className="w-4 h-4 text-emerald-600" />
+                  ) : (
+                    <ArrowRight className="w-4 h-4" />
+                  )}
                 </button>
               </div>
             </form>
-            {subscribed && (
+            {subscribedMsg && (
               <p className="text-[11px] text-emerald-600 font-semibold mt-2 animate-fade-in">
-                Thank you for subscribing!
+                {subscribedMsg}
+              </p>
+            )}
+            {subscribeError && (
+              <p className="text-[11px] text-rose-600 font-semibold mt-2 animate-fade-in">
+                {subscribeError}
               </p>
             )}
           </div>
@@ -128,30 +160,53 @@ export default function Footer() {
         </div>
       </div>
 
-
       {/* ── Bottom Strip: Social Media, Copyright, Payment Partners ── */}
       <div className="border-t border-gray-200/80 bg-[#e9ecf0] py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-500">
           
-          {/* Social Icons */}
+          {/* Social Icons with Dynamic Links */}
           <div className="flex items-center gap-3">
-            <a href="#facebook" className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:text-blue-600 hover:border-blue-600 transition-colors" aria-label="Facebook">
+            <a 
+              href={company?.facebook || '#facebook'} 
+              target={company?.facebook ? '_blank' : '_self'}
+              rel="noreferrer"
+              className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:text-blue-600 hover:border-blue-600 transition-colors" 
+              aria-label="Facebook"
+            >
               <FacebookIcon />
             </a>
-            <a href="#twitter" className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:text-black hover:border-black transition-colors" aria-label="X (Twitter)">
+            <a 
+              href={company?.twitter || '#twitter'} 
+              target={company?.twitter ? '_blank' : '_self'}
+              rel="noreferrer"
+              className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:text-black hover:border-black transition-colors" 
+              aria-label="X (Twitter)"
+            >
               <TwitterIcon />
             </a>
-            <a href="#instagram" className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:text-pink-600 hover:border-pink-600 transition-colors" aria-label="Instagram">
+            <a 
+              href={company?.instagram || '#instagram'} 
+              target={company?.instagram ? '_blank' : '_self'}
+              rel="noreferrer"
+              className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:text-pink-600 hover:border-pink-600 transition-colors" 
+              aria-label="Instagram"
+            >
               <InstagramIcon />
             </a>
-            <a href="#linkedin" className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:text-blue-700 hover:border-blue-700 transition-colors" aria-label="LinkedIn">
+            <a 
+              href={company?.linkedin || '#linkedin'} 
+              target={company?.linkedin ? '_blank' : '_self'}
+              rel="noreferrer"
+              className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:text-blue-700 hover:border-blue-700 transition-colors" 
+              aria-label="LinkedIn"
+            >
               <LinkedinIcon />
             </a>
           </div>
 
-          {/* Copyright Notice */}
+          {/* Dynamic Copyright Notice */}
           <div className="text-center font-medium text-gray-600">
-            © 1994-2026 giftora.com. All rights reserved.
+            {copyrightText}
           </div>
 
           {/* Payment Partner Logos */}

@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useWebsite } from '../context/WebsiteContext';
 
-/* ── Offers Data ─────────────────────────────────────────── */
-const offers = [
+const DEFAULT_OFFERS = [
   {
     id: 1,
     partner: 'Airtel Payments Bank',
@@ -58,7 +58,8 @@ const offers = [
 const CARD_GAP = 20; // px between cards
 const VISIBLE  = 3;  // cards visible on desktop
 
-export default function SaveMoreOffers() {
+export default function SaveMoreOffers({ data }) {
+  const offers = (Array.isArray(data) && data.length > 0) ? data : DEFAULT_OFFERS;
   const [currentIndex, setCurrentIndex] = useState(0);
   const [cardWidth, setCardWidth]       = useState(0);
   const containerRef = useRef(null);
@@ -126,7 +127,7 @@ export default function SaveMoreOffers() {
                 >
                   {/* Ticket Card Wrapper */}
                   <div
-                    className={`w-full ${item.bgColor} border ${item.borderColor} rounded-[20px] relative overflow-hidden
+                    className={`w-full ${item.bgColor || 'bg-[#fff0bd]'} border ${item.borderColor || 'border-[#ffe494]'} rounded-[20px] relative overflow-hidden
                       p-5 sm:p-6 min-h-[175px] sm:min-h-[190px] flex flex-col justify-between
                       group-hover:shadow-xl group-hover:-translate-y-1 transition-all duration-300 select-none`}
                   >
@@ -192,6 +193,10 @@ export default function SaveMoreOffers() {
                             PhonePe
                           </span>
                         </div>
+                      )}
+
+                      {!['airtel', 'mobikwik', 'paytm', 'cred', 'phonepe'].includes(item.partnerType) && (
+                        <span className="font-extrabold text-base text-gray-900 font-sans">{item.partner}</span>
                       )}
                     </div>
 

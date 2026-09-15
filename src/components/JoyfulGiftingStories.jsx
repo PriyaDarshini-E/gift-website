@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight, Play, Pause, Volume2, VolumeX, Maximize2, Share2 } from 'lucide-react';
 
-/* ── Video Stories Data ──────────────────────────────────── */
-const stories = [
+const DEFAULT_STORIES = [
   {
     id: 1,
     title: 'take a break - DRINK COFFEE IN YOUR PERSONALISED MUG',
@@ -68,7 +67,8 @@ const stories = [
 const CARD_GAP = 20; // px between cards
 const VISIBLE  = 5;  // cards visible on desktop
 
-export default function JoyfulGiftingStories() {
+export default function JoyfulGiftingStories({ data = DEFAULT_STORIES }) {
+  const stories = Array.isArray(data) && data.length > 0 ? data : DEFAULT_STORIES;
   const [currentIndex, setCurrentIndex] = useState(0);
   const [cardWidth, setCardWidth]       = useState(0);
   const [mutedStates, setMutedStates]   = useState({});
@@ -146,7 +146,7 @@ export default function JoyfulGiftingStories() {
                 >
                   {/* Vertical Video Reel Card (9:16 Aspect Ratio) */}
                   <div
-                    className={`relative w-full rounded-[20px] overflow-hidden shadow-sm group-hover:shadow-md transition-all duration-200 flex flex-col justify-between bg-gradient-to-b ${item.bgGradient}`}
+                    className={`relative w-full rounded-[20px] overflow-hidden shadow-sm group-hover:shadow-md transition-all duration-200 flex flex-col justify-between bg-gradient-to-b ${item.bgGradient || 'from-stone-900 via-stone-800 to-black'}`}
                     style={{ aspectRatio: '9/15' }}
                   >
                     {/* Background Simulated Video Player / Animated Canvas */}
@@ -215,7 +215,7 @@ export default function JoyfulGiftingStories() {
                       <div className="bg-white/95 backdrop-blur-md rounded-[14px] p-2 flex items-center justify-between gap-2 shadow-lg border border-white/50">
                         {/* Product Thumb 1 */}
                         <div className="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center flex-shrink-0 text-base">
-                          {item.thumbEmoji}
+                          {item.thumbEmoji || '🎁'}
                         </div>
 
                         {/* Product Info */}
@@ -230,7 +230,7 @@ export default function JoyfulGiftingStories() {
 
                         {/* Product Thumb 2 */}
                         <div className="w-7 h-7 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center flex-shrink-0 text-sm">
-                          {item.thumb2Emoji}
+                          {item.thumb2Emoji || '✨'}
                         </div>
                       </div>
                     </div>

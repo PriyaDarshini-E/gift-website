@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useCompany } from '../context/CompanyContext';
 import { 
   FileText, 
   ShieldCheck, 
@@ -31,6 +32,7 @@ const sections = [
 ];
 
 export default function TermsAndConditions() {
+  const { company } = useCompany();
   const [activeSection, setActiveSection] = useState('agreement');
 
   const scrollToSection = (id) => {
@@ -152,9 +154,9 @@ export default function TermsAndConditions() {
                 <ShieldCheck className="w-5 h-5" />
               </div>
               <div className="text-xs sm:text-sm text-stone-600 leading-relaxed space-y-2">
-                <p className="font-semibold text-stone-900 text-base">Welcome to Giftora!</p>
+                <p className="font-semibold text-stone-900 text-base">Welcome to {company?.name || 'Memory Creators'}!</p>
                 <p>
-                  These Terms and Conditions governing the use of website <span className="font-semibold text-stone-800">www.giftora.com</span> and mobile applications ("Giftora Platform") operated by <span className="font-semibold text-stone-800">Giftora E Retail Private Limited</span>. By accessing, browsing, or purchasing products through Giftora, you acknowledge and agree to comply with all clauses outlined herein.
+                  These Terms and Conditions governing the use of website <span className="font-semibold text-stone-800">{company?.website || 'www.memorycreators.in'}</span> and mobile applications operated by <span className="font-semibold text-stone-800">{company?.name || 'Memory Creators'}</span>. By accessing, browsing, or purchasing products through {company?.name || 'Memory Creators'}, you acknowledge and agree to comply with all clauses outlined herein.
                 </p>
               </div>
             </div>
@@ -342,8 +344,8 @@ export default function TermsAndConditions() {
                       <Mail className="w-4 h-4 text-olive-600" />
                       Email Support
                     </p>
-                    <a href="mailto:support@giftora.com" className="text-xs text-olive-700 hover:underline">
-                      support@giftora.com
+                    <a href={`mailto:${company?.email || 'info@memorycreators.in'}`} className="text-xs text-olive-700 hover:underline">
+                      {company?.email || 'info@memorycreators.in'}
                     </a>
                   </div>
 
@@ -352,13 +354,13 @@ export default function TermsAndConditions() {
                       <Phone className="w-4 h-4 text-olive-600" />
                       Customer Care Helpline
                     </p>
-                    <p className="text-xs text-stone-700">+91 92124 22000 (9 AM - 9 PM)</p>
+                    <p className="text-xs text-stone-700">{company?.phone || '+91 88671 71060'} (9 AM - 9 PM)</p>
                   </div>
                 </div>
 
                 <div className="pt-2 text-xs text-stone-500">
                   <p className="font-semibold text-stone-800">Corporate Address:</p>
-                  <p>Giftora E Retail Private Limited, Plot No. 75P, Sector-44, Gurugram, Haryana - 122003, India.</p>
+                  <p>{company?.name || 'Memory Creators'}, {company?.address || 'Jayanagar 9th Block, Bangalore – 560 043 Karnataka.'}</p>
                 </div>
               </div>
             </section>

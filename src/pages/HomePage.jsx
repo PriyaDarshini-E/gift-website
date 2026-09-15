@@ -3,6 +3,7 @@ import CategoryNav from '../components/CategoryNav';
 import CategoryStrip from '../components/CategoryStrip';
 import OccasionGifts from '../components/OccasionGifts';
 import PromoBanners from '../components/PromoBanners';
+import SideBannerSection from '../components/SideBannerSection';
 import BestSellers from '../components/BestSellers';
 import FlowersCollection from '../components/FlowersCollection';
 import BirthdayGifts from '../components/BirthdayGifts';
@@ -21,15 +22,35 @@ export default function HomePage() {
     <div className="animate-fade-in">
       <CategoryNav />
       <CategoryStrip />
+      
+      {/* Top Banner Section (Hero Carousel) */}
+      <PromoBanners position="Top" />
+
       <OccasionGifts />
-      <PromoBanners />
       <BestSellers />
       <FlowersCollection />
+
+      {/* Featured Left Banner with Related Cards Showcase */}
+      <SideBannerSection position="Left" bannerIndex={0} />
+
       <BirthdayGifts />
       <GiftsForEveryone />
+
+      {/* Middle Banner Section */}
+      <PromoBanners position="Middle" />
+
       <FreshlyBakedCakes />
       <GiftsForEveryFeeling />
+
+      {/* Featured Second Banner / Right Banner with Related Cards Showcase */}
+      <SideBannerSection position="Left" bannerIndex={1} />
+      <SideBannerSection position="Right" bannerIndex={0} />
+
       <NewlyLaunched />
+
+      {/* Bottom Banners if configured */}
+      <PromoBanners position="Bottom" />
+
       <SaveMoreOffers />
       <PlantsForEveryVibe />
       <JoyfulGiftingStories />

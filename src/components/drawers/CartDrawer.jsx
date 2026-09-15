@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useCart } from '../../context/CartContext';
+import FixedImage from '../common/FixedImage';
 import { 
   X, 
   ShoppingBag, 
@@ -137,10 +138,12 @@ export default function CartDrawer() {
                       key={`${item.id}-${item.variant}`}
                       className="bg-stone-50 rounded-2xl p-4 border border-stone-200/80 flex gap-4 items-center"
                     >
-                      <img 
-                        src={item.image} 
+                      <FixedImage 
+                        src={item.image || item.img} 
                         alt={item.name} 
-                        className="w-16 h-16 rounded-xl object-cover border border-stone-200 flex-shrink-0"
+                        type="product"
+                        containerClassName="w-16 h-16 rounded-xl border border-stone-200 flex-shrink-0"
+                        imageClassName="w-full h-full object-cover"
                       />
                       
                       <div className="flex-1 min-w-0">
